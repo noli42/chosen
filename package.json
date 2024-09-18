@@ -1,0 +1,23 @@
+{
+  "name": "chosen",
+  "version": "0.0.1",
+  "description": "Chosen is a library for making long, unwieldy select boxes more friendly.",
+  "main": "dist/chosen.min.js",
+  "scripts": {
+    "build:css": "sass src/chosen.scss dist/chosen.css",
+    "minify:css": "postcss dist/chosen.css --use cssnano -o dist/chosen.min.css",
+    "build:js": "terser src/chosen.js -o dist/chosen.min.js --compress --mangle",
+    "copy:js": "cp src/chosen.js dist/chosen.js",
+    "build": "npm run build:css && npm run minify:css && npm run build:js && npm run copy:js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cssnano": "^7.0.6",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "sass": "^1.79.1",
+    "terser": "^5.33.0"
+  }
+}

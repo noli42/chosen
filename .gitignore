@@ -3,10 +3,6 @@ node_modules/
 
 # Ignore build artifacts
 dist/
-build/
-*.min.js
-*.css
-*.min.css
 
 # Ignore editor configurations
 .idea/
