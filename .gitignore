@@ -1,0 +1,16 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build artifacts
+dist/
+build/
+*.min.js
+*.css
+*.min.css
+
+# Ignore editor configurations
+.idea/
+.vscode/
+
+# MacOS files
+.DS_Store
