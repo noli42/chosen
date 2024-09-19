@@ -91,7 +91,7 @@
       this.label_click_handler = this.label_click_handler.bind(this);
       this.form_field = form_field;
       this.options = options1;
-      if (!AbstractChosen.browser_is_supported()) {
+      if (!AbstractChosen.browser_is_supported(options1)) {
         return;
       }
       this.is_multiple = this.form_field.multiple;
@@ -713,13 +713,25 @@
       return `<li class="create-option active-result" role="option"><a>${this.create_option_text}</a> <span>${this.escape_html(terms)}</span></li>`;
     }
 
-    static browser_is_supported() {
-      if ("Microsoft Internet Explorer" === window.navigator.appName) {
-        return document.documentMode >= 8;
+    static browser_is_supported(options) {
+      const userAgent = window.navigator.userAgent;
+
+      const isiOS = /iP(od|hone)/i.test(userAgent);
+      const isAndroid = /Android.*Mobile/i.test(userAgent);
+      const isOtherMobile = /IEMobile/i.test(userAgent) || /Windows Phone/i.test(userAgent) || /BlackBerry/i.test(userAgent) || /BB10/i.test(userAgent);
+
+      if (options && options.allow_mobile) {
+        if (isiOS || isAndroid) {
+          return true;
+        } else if (isOtherMobile) {
+          return false;
+        }
       }
-      if (/iP(od|hone)/i.test(window.navigator.userAgent) || /IEMobile/i.test(window.navigator.userAgent) || /Windows Phone/i.test(window.navigator.userAgent) || /BlackBerry/i.test(window.navigator.userAgent) || /BB10/i.test(window.navigator.userAgent) || /Android.*Mobile/i.test(window.navigator.userAgent)) {
+
+      if (isiOS || isAndroid || isOtherMobile) {
         return false;
       }
+
       return true;
     }
 
@@ -1503,7 +1515,7 @@
 
   // Attach chosen method to HTMLElement prototype
   HTMLElement.prototype.chosen = function(options) {
-    if (!AbstractChosen.browser_is_supported()) {
+    if (!AbstractChosen.browser_is_supported(options)) {
       return this;
     }
     if (options === 'destroy') {
