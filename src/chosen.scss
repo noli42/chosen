@@ -18,6 +18,18 @@ $chosen-selected-color: #e0e0e0;
 	font-size: 14px;
 	user-select: none;
 
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
 	* {
 		box-sizing: border-box;
 	}

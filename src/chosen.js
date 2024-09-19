@@ -735,6 +735,7 @@
   AbstractChosen.default_single_text = "Select an Option";
   AbstractChosen.default_no_result_text = "No results for:";
   AbstractChosen.default_create_option_text = "Add Option:";
+  AbstractChosen.default_remove_item_text = "Remove selection";
 
   class Chosen extends AbstractChosen {
     setup() {
@@ -1150,6 +1151,12 @@
         close_link.tabIndex = -1;
         close_link.className = 'search-choice-close';
         close_link.setAttribute('data-option-array-index', item.data['data-option-array-index']);
+
+        const span = document.createElement('span');
+        span.className = 'visually-hidden focusable';
+        span.textContent = AbstractChosen.default_remove_item_text;
+        close_link.appendChild(span);
+
         close_link.addEventListener('click', evt => this.choice_destroy_link_click(evt));
         choice.appendChild(close_link);
       }
