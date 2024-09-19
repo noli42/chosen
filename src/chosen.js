@@ -883,7 +883,10 @@
     }
 
     container_mousedown(evt) {
-      if (!this.is_disabled && (evt && this.mousedown_checker(evt) === 'left')) {
+      if (this.is_disabled) {
+        return;
+      }
+      if (evt && this.mousedown_checker(evt) === 'left') {
         if (evt && evt.type === "mousedown" && !this.results_showing) {
           evt.preventDefault();
         }
