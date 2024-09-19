@@ -24,6 +24,10 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      - name: Copy LICENSE.md to dist folder
+        run: cp LICENSE.md dist/
+        shell: bash
+
       - name: Create ZIP Archive
         run: |
           cd dist
