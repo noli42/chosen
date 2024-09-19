@@ -678,7 +678,7 @@
     get_single_html() {
       return `<a class="chosen-single chosen-default">
   <span>${this.default_text}</span>
-  <div><b></b></div>
+  <div aria-label="Show options"><b aria-hidden="true"></b></div>
 </a>
 <div class="chosen-drop">
   <div class="chosen-search">
@@ -1056,6 +1056,10 @@
         this.container.classList.add("chosen-dropup");
       }
       this.container.classList.add("chosen-with-drop");
+      const chosenSingleDiv = this.container.querySelector(".chosen-single div");
+      if (chosenSingleDiv) {
+        chosenSingleDiv.setAttribute("aria-label", "Hide options");
+      }
       this.results_showing = true;
       this.search_field.setAttribute("aria-expanded", true);
       this.search_field.focus();
@@ -1070,6 +1074,10 @@
         this.result_clear_highlight();
         this.container.classList.remove("chosen-with-drop");
         this.container.classList.remove("chosen-dropup");
+        const chosenSingleDiv = this.container.querySelector(".chosen-single div");
+        if (chosenSingleDiv) {
+          chosenSingleDiv.setAttribute("aria-label", "Show options");
+        }
         const event = new CustomEvent("chosen:hiding_dropdown", { detail: { chosen: this } });
         this.form_field.dispatchEvent(event);
       }
