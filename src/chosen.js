@@ -426,13 +426,13 @@
 
     get_list_special_char() {
       const chars = [];
-      chars.push({ val: "ae", let: "(ä|æ|ǽ)" });
-      chars.push({ val: "oe", let: "(ö|œ)" });
-      chars.push({ val: "ue", let: "(ü)" });
-      chars.push({ val: "Ae", let: "(Ä)" });
-      chars.push({ val: "Ue", let: "(Ü)" });
-      chars.push({ val: "Oe", let: "(Ö)" });
-      chars.push({ val: "AE", let: "(Æ|Ǽ)" });
+      chars.push({ val: "a", let: "(ä|æ|ǽ)" });
+      chars.push({ val: "o", let: "(ö|œ)" });
+      chars.push({ val: "u", let: "(ü)" });
+      chars.push({ val: "A", let: "(Ä)" });
+      chars.push({ val: "U", let: "(Ü)" });
+      chars.push({ val: "O", let: "(Ö)" });
+      chars.push({ val: "A", let: "(Æ|Ǽ)" });
       chars.push({ val: "ss", let: "(ß)" });
       chars.push({ val: "IJ", let: "(Ĳ)" });
       chars.push({ val: "ij", let: "(ĳ)" });
