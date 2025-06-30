@@ -338,7 +338,7 @@
       let results = 0;
       let exact_result = false;
       let match_value = false;
-      const query = this.get_search_text();
+      const query = this.escape_special_char(this.get_search_text());
       const escaped_query = query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
       const regex = this.get_search_regex(escaped_query);
       const exact_regex = new RegExp(`^${escaped_query}$`);
@@ -363,7 +363,7 @@
           }
           let text = option.group ? option.label : option.text;
           if (!(option.group && !this.group_search)) {
-            search_match = this.search_string_match(text, regex);
+            search_match = this.search_string_match(this.escape_special_char(text), regex);
             option.search_match = search_match != null;
             if (!option.search_match && this.search_in_values) {
               option.search_match = this.search_string_match(option.value, regex);
