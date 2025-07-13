@@ -118,6 +118,7 @@
       this.result_highlighted = null;
       this.is_rtl = this.options.rtl || /\bchosen-rtl\b/.test(this.form_field.className);
       this.allow_single_deselect = (this.options.allow_single_deselect != null) && (this.form_field.options[0] != null) && this.form_field.options[0].text === "" ? this.options.allow_single_deselect : false;
+      this.diacritic_normalization = this.options.diacritic_normalization != null ? this.options.diacritic_normalization : true;
       this.disable_search_threshold = this.options.disable_search_threshold || 0;
       this.disable_search = this.options.disable_search || false;
       this.enable_split_word_search = this.options.enable_split_word_search != null ? this.options.enable_split_word_search : true;
@@ -338,7 +339,7 @@
       let results = 0;
       let exact_result = false;
       let match_value = false;
-      const query = this.get_search_text();
+      const query = this.escape_special_char(this.get_search_text());
       const escaped_query = query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
       const regex = this.get_search_regex(escaped_query);
       const exact_regex = new RegExp(`^${escaped_query}$`);
@@ -363,10 +364,10 @@
           }
           let text = option.group ? option.label : option.text;
           if (!(option.group && !this.group_search)) {
-            search_match = this.search_string_match(text, regex);
+            search_match = this.search_string_match(this.escape_special_char(text), regex);
             option.search_match = search_match != null;
             if (!option.search_match && this.search_in_values) {
-              option.search_match = this.search_string_match(option.value, regex);
+              option.search_match = this.search_string_match(escape_special_char(option.value), regex);
               match_value = true;
             }
             if (option.search_match && !option.group) {
@@ -426,13 +427,13 @@
 
     get_list_special_char() {
       const chars = [];
-      chars.push({ val: "ae", let: "(ä|æ|ǽ)" });
-      chars.push({ val: "oe", let: "(ö|œ)" });
-      chars.push({ val: "ue", let: "(ü)" });
-      chars.push({ val: "Ae", let: "(Ä)" });
-      chars.push({ val: "Ue", let: "(Ü)" });
-      chars.push({ val: "Oe", let: "(Ö)" });
-      chars.push({ val: "AE", let: "(Æ|Ǽ)" });
+      chars.push({ val: "a", let: "(ä|æ|ǽ)" });
+      chars.push({ val: "o", let: "(ö|œ)" });
+      chars.push({ val: "u", let: "(ü)" });
+      chars.push({ val: "A", let: "(Ä)" });
+      chars.push({ val: "U", let: "(Ü)" });
+      chars.push({ val: "O", let: "(Ö)" });
+      chars.push({ val: "A", let: "(Æ|Ǽ)" });
       chars.push({ val: "ss", let: "(ß)" });
       chars.push({ val: "IJ", let: "(Ĳ)" });
       chars.push({ val: "ij", let: "(ĳ)" });
@@ -480,6 +481,9 @@
     }
 
     escape_special_char(str) {
+      if (!this.diacritic_normalization) {
+        return str;
+      }
       const specialChars = this.get_list_special_char();
       for (let special of specialChars) {
         str = str.replace(new RegExp(special.let, "g"), special.val);
@@ -489,9 +493,6 @@
 
     search_string_match(search_string, regex) {
       let match = regex.exec(search_string);
-      if (!this.case_sensitive_search && (match != null)) {
-        match = regex.exec(this.escape_special_char(search_string));
-      }
       if (!this.search_contains && (match != null ? match[1] : undefined)) {
         match.index += 1;
       }
