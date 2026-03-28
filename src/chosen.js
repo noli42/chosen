@@ -523,10 +523,11 @@
     mousedown_checker(evt) {
       evt = evt || window.event;
       let mousedown_type;
-      if (!evt.which && evt.button !== undefined) {
-        evt.which = (evt.button & 1 ? 1 : (evt.button & 2 ? 3 : (evt.button & 4 ? 2 : 0)));
-      }
-      switch (evt.which) {
+      const which = (evt.which == null && evt.button !== undefined)
+        ? (evt.button & 1 ? 1 : (evt.button & 2 ? 3 : (evt.button & 4 ? 2 : 0)))
+        : (evt.which || 0);
+
+      switch (which) {
         case 1:
           mousedown_type = 'left';
           break;
