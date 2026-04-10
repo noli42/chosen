@@ -1398,7 +1398,7 @@
       this.form_field.insertAdjacentHTML('beforeend', option);
       const event = new Event("chosen:updated");
       this.form_field.dispatchEvent(event);
-      const changeEvent = new Event("change");
+      const changeEvent = new Event("change", { bubbles: true });
       this.form_field.dispatchEvent(changeEvent);
       this.search_field.focus();
     }
@@ -1509,7 +1509,7 @@
 
     trigger_form_field_change(extra) {
       const inputEvent = new Event('input');
-      const changeEvent = new Event('change', extra);
+      const changeEvent = new Event('change', Object.assign({ bubbles: true }, extra || {}));
       this.form_field.dispatchEvent(inputEvent);
       this.form_field.dispatchEvent(changeEvent);
     }
