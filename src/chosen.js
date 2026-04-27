@@ -784,6 +784,7 @@
       }
       this.form_field.style.position = 'absolute';
       this.form_field.style.opacity = 0;
+      this.form_field.style.pointerEvents = 'none';
       this.form_field.parentNode.insertBefore(this.container, this.form_field.nextSibling);
       this.dropdown = this.container.querySelector('div.chosen-drop');
       this.search_field = this.container.querySelector('input');
@@ -857,6 +858,7 @@
       delete this.form_field.__chosen_instance;
       this.form_field.style.position = '';
       this.form_field.style.opacity = '';
+      this.form_field.style.pointerEvents = '';
       this.form_field.style.display = '';
     }
 
