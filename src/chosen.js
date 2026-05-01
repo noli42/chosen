@@ -757,6 +757,8 @@
     }
 
     set_up_html() {
+      this._a11y_orig_aria_hidden = this.form_field.getAttribute('aria-hidden');
+      this._a11y_orig_tabindex = this.form_field.getAttribute('tabindex');
       let container_classes = ["chosen-container"];
       container_classes.push("chosen-container-" + (this.is_multiple ? "multi" : "single"));
       if (this.inherit_select_classes && this.form_field.className) {
@@ -787,6 +789,7 @@
       this.form_field.style.pointerEvents = 'none';
       this.form_field.parentNode.insertBefore(this.container, this.form_field.nextSibling);
       this.dropdown = this.container.querySelector('div.chosen-drop');
+      this.dropdown.setAttribute('aria-hidden', 'true');
       this.search_field = this.container.querySelector('input');
       this.search_results = this.container.querySelector('ul.chosen-results');
       this.search_results.setAttribute('id', `${this.form_field.id}-chosen-search-results`);
@@ -801,6 +804,8 @@
       this.set_aria_labels();
       this.results_build();
       this.set_tab_index();
+      this.form_field.setAttribute('aria-hidden', 'true');
+      this.form_field.setAttribute('tabindex', '-1');
       this.set_label_behavior();
     }
 
@@ -860,17 +865,30 @@
       this.form_field.style.opacity = '';
       this.form_field.style.pointerEvents = '';
       this.form_field.style.display = '';
+      if (this._a11y_orig_aria_hidden === null) {
+        this.form_field.removeAttribute('aria-hidden');
+      } else {
+        this.form_field.setAttribute('aria-hidden', this._a11y_orig_aria_hidden);
+      }
+      if (this._a11y_orig_tabindex === null) {
+        this.form_field.removeAttribute('tabindex');
+      } else {
+        this.form_field.setAttribute('tabindex', this._a11y_orig_tabindex);
+      }
     }
 
     set_aria_labels() {
       this.search_field.setAttribute("aria-owns", this.search_results.getAttribute("id"));
+      let accessibleName = "";
+      let labelledbyList = "";
       if (this.form_field.getAttribute("aria-label")) {
-        this.search_field.setAttribute("aria-label", this.form_field.getAttribute("aria-label"));
+        accessibleName = this.form_field.getAttribute("aria-label");
+        this.search_field.setAttribute("aria-label", accessibleName);
         if (this.form_field.getAttribute("aria-labelledby")) {
-          this.search_field.setAttribute("aria-labelledby", this.form_field.getAttribute("aria-labelledby"));
+          labelledbyList = this.form_field.getAttribute("aria-labelledby");
+          this.search_field.setAttribute("aria-labelledby", labelledbyList);
         }
       } else if (this.form_field.labels && this.form_field.labels.length) {
-        let labelledbyList = "";
         for (let i = 0; i < this.form_field.labels.length; i++) {
           let label = this.form_field.labels[i];
           if (label.id === "") {
@@ -878,7 +896,17 @@
           }
           labelledbyList += this.form_field.labels[i].id + " ";
         }
+        labelledbyList = labelledbyList.trim();
         this.search_field.setAttribute("aria-labelledby", labelledbyList);
+        accessibleName = this.form_field.labels[0].textContent.trim();
+      }
+      if (labelledbyList) {
+        this.container.setAttribute("aria-labelledby", labelledbyList);
+      } else if (accessibleName) {
+        this.container.setAttribute("aria-label", accessibleName);
+      }
+      if (accessibleName) {
+        this.search_results.setAttribute("aria-label", accessibleName);
       }
     }
 
@@ -1077,6 +1105,7 @@
       if (chosenSingleDiv) {
         chosenSingleDiv.setAttribute("aria-label", "Hide options");
       }
+      this.dropdown.setAttribute("aria-hidden", "false");
       this.results_showing = true;
       this.search_field.setAttribute("aria-expanded", true);
       this.search_field.focus();
@@ -1098,6 +1127,7 @@
         const event = new CustomEvent("chosen:hiding_dropdown", { detail: { chosen: this } });
         this.form_field.dispatchEvent(event);
       }
+      this.dropdown.setAttribute("aria-hidden", "true");
       this.search_field.setAttribute("aria-expanded", false);
       this.results_showing = false;
     }
