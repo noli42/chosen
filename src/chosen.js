@@ -687,7 +687,22 @@
 
     search_results_touchend(evt) {
       if (this.touch_started) {
-        this.search_results_mouseup(evt);
+        evt.preventDefault();
+
+        const targetEl = evt.target instanceof Element ? evt.target : null;
+
+        const target = targetEl && (
+          targetEl.classList.contains("active-result") ||
+          targetEl.classList.contains("group-result")
+            ? targetEl
+            : targetEl.closest(".active-result, .group-result")
+        );
+
+        if (target) {
+          this.result_highlight = target;
+          this.result_select(evt);
+          this.search_field.focus();
+        }
       }
     }
 
@@ -725,26 +740,22 @@
       return `<li class="create-option active-result" role="option"><a>${this.escape_html(this.create_option_text)}</a> <span>${this.escape_html(terms)}</span></li>`;
     }
 
-    static browser_is_supported(options) {
+    static browser_is_supported(options = {}) {
+      if (options.allow_mobile !== false) {
+        return true;
+      }
+
       const userAgent = window.navigator.userAgent;
 
-      const isiOS = /iP(od|hone)/i.test(userAgent);
-      const isAndroid = /Android.*Mobile/i.test(userAgent);
-      const isOtherMobile = /IEMobile/i.test(userAgent) || /Windows Phone/i.test(userAgent) || /BlackBerry/i.test(userAgent) || /BB10/i.test(userAgent);
+      const isMobile =
+        /iP(od|hone|ad)/i.test(userAgent) ||
+        /Android.*Mobile/i.test(userAgent) ||
+        /IEMobile/i.test(userAgent) ||
+        /Windows Phone/i.test(userAgent) ||
+        /BlackBerry/i.test(userAgent) ||
+        /BB10/i.test(userAgent);
 
-      if (options && options.allow_mobile) {
-        if (isiOS || isAndroid) {
-          return true;
-        } else if (isOtherMobile) {
-          return false;
-        }
-      }
-
-      if (isiOS || isAndroid || isOtherMobile) {
-        return false;
-      }
-
-      return true;
+      return !isMobile;
     }
 
     escape_html(text) {
@@ -942,26 +953,39 @@
       if (this.is_disabled) {
         return;
       }
+
       if (evt && this.mousedown_checker(evt) === 'left') {
         if (evt && evt.type === "mousedown" && !this.results_showing) {
           evt.preventDefault();
         }
       }
+
       if (evt && (evt.type === 'mousedown' || evt.type === 'touchstart') && !this.results_showing) {
         evt.preventDefault();
       }
+
       if (!((evt != null) && evt.target.classList.contains("search-choice-close"))) {
         if (!this.active_field) {
           if (this.is_multiple) {
             this.search_field.value = "";
           }
-          const rootNode = this.container.getRootNode != null ? this.container.getRootNode() : this.container.ownerDocument;
+
+          const rootNode = this.container.getRootNode != null
+            ? this.container.getRootNode()
+            : this.container.ownerDocument;
+
           rootNode.addEventListener('click', this.click_test_action);
           this.results_show();
+
+        } else if (this.is_multiple && !this.results_showing) {
+          this.search_field.value = "";
+          this.results_show();
+
         } else if (!this.is_multiple && evt && (evt.target === this.selected_item || evt.target.closest("a.chosen-single"))) {
           evt.preventDefault();
           this.results_toggle();
         }
+
         this.activate_field();
       }
     }
