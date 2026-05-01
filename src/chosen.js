@@ -367,7 +367,7 @@
             search_match = this.search_string_match(this.escape_special_char(text), regex);
             option.search_match = search_match != null;
             if (!option.search_match && this.search_in_values) {
-              option.search_match = this.search_string_match(escape_special_char(option.value), regex);
+              option.search_match = this.search_string_match(this.escape_special_char(option.value), regex);
               match_value = true;
             }
             if (option.search_match && !option.group) {
@@ -1253,9 +1253,20 @@
             });
             if (!is_chosen) {
               this.result_highlight = next;
-              evt.target = next;
-              evt.selected = true;
-              this.result_select(evt);
+
+              const groupSelectEvent = {
+                target: next,
+                selected: true,
+                metaKey: evt.metaKey,
+                ctrlKey: evt.ctrlKey,
+                preventDefault: () => {
+                  if (typeof evt.preventDefault === "function") {
+                    evt.preventDefault();
+                  }
+                }
+              };
+
+              this.result_select(groupSelectEvent);
             }
           }
           next = next.nextElementSibling;
