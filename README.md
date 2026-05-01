@@ -1,6 +1,12 @@
 # Chosen
 
-Chosen is a library for making long, unwieldy select boxes more user friendly.
+[![Tests](https://github.com/noli42/chosen/actions/workflows/test.yml/badge.svg)](https://github.com/noli42/chosen/actions/workflows/test.yml)
+
+Chosen is a lightweight JavaScript library for making long, unwieldy select boxes more user-friendly.
+
+It enhances standard HTML `<select>` elements with a searchable, more usable interface while keeping the original form element intact.
+
+Chosen has no jQuery dependency and does not require any other external JavaScript libraries. It is written in plain JavaScript and can be used directly in modern web projects.
 
 For **downloads**, see:
 https://github.com/noli42/chosen/releases
