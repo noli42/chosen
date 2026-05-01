@@ -145,6 +145,67 @@ function setupSelectByGroupSelect() {
   return document.querySelector("#select-by-group");
 }
 
+function setupFormattedTextSelect() {
+  document.body.innerHTML = `
+    <select id="formatted-text" class="chosen-select">
+      <option value=""></option>
+      <option value="hu">Hungary</option>
+      <option value="de">Germany</option>
+    </select>
+  `;
+
+  const option = document.querySelector("#formatted-text option[value='hu']");
+  option.innerHTML = `<span class="country-label">Hungary</span>`;
+
+  return document.querySelector("#formatted-text");
+}
+
+function setupOptionMetadataSelect() {
+  document.body.innerHTML = `
+    <select id="option-metadata" class="chosen-select">
+      <option value=""></option>
+      <option
+        value="fr"
+        class="flag-fr country-option"
+        style="font-weight: bold"
+        data-country-code="FR"
+        data-region="EU"
+      >France</option>
+    </select>
+  `;
+
+  return document.querySelector("#option-metadata");
+}
+
+function setupGeneratedAttributeSelect() {
+  document.body.innerHTML = `
+    <select id="generated-attributes" class="chosen-select">
+      <option value=""></option>
+      <option
+        value="hu"
+        data-country-code="HU"
+        data-option-array-index="999"
+        data-value="custom-value"
+      >Hungary</option>
+    </select>
+  `;
+
+  return document.querySelector("#generated-attributes");
+}
+
+function setupSelectorPunctuationLabelSelect() {
+  document.body.innerHTML = `
+    <label for="country'][data-test='x" id="punctuation-label">Country</label>
+    <select id="country'][data-test='x" class="chosen-select">
+      <option value=""></option>
+      <option value="hu">Hungary</option>
+      <option value="de">Germany</option>
+    </select>
+  `;
+
+  return document.querySelector("select");
+}
+
 function chosenContainerId(selectId) {
   return `${selectId.replace(/[^\w]/g, "_")}_chosen`;
 }
@@ -694,6 +755,137 @@ describe("Chosen select component", () => {
     expect(hungary).not.toBeUndefined();
     expect(hungary.getAttribute("data-country-code")).toBe("HU");
     expect(hungary.getAttribute("data-region")).toBe("EU");
+  });
+
+  it("renders option labels from text content", () => {
+    const select = setupFormattedTextSelect();
+
+    select.chosen();
+
+    openChosen("formatted-text");
+
+    const result = getResultByText("Hungary");
+
+    expect(result).not.toBeUndefined();
+    expect(result.querySelector("span.country-label")).toBeNull();
+    expect(result.textContent).toContain("Hungary");
+  });
+
+  it("carries option classes, styles, and copied data attributes to result items", () => {
+    const select = setupOptionMetadataSelect();
+
+    select.chosen({
+      parser_config: {
+        copy_data_attributes: true
+      }
+    });
+
+    openChosen("option-metadata");
+
+    const france = getResultByText("France");
+
+    expect(france).not.toBeUndefined();
+    expect(france.classList.contains("flag-fr")).toBe(true);
+    expect(france.classList.contains("country-option")).toBe(true);
+    expect(france.getAttribute("style")).toContain("font-weight");
+    expect(france.getAttribute("data-country-code")).toBe("FR");
+    expect(france.getAttribute("data-region")).toBe("EU");
+  });
+
+  it("keeps generated result data attributes when option data attributes are copied", () => {
+    const select = setupGeneratedAttributeSelect();
+
+    select.chosen({
+      parser_config: {
+        copy_data_attributes: true
+      }
+    });
+
+    openChosen("generated-attributes");
+
+    const hungary = getResultByText("Hungary");
+
+    expect(hungary).not.toBeUndefined();
+    expect(hungary.getAttribute("data-country-code")).toBe("HU");
+    expect(hungary.getAttribute("data-option-array-index")).not.toBe("999");
+    expect(hungary.getAttribute("data-value")).toBe("hu");
+  });
+
+  it("renders custom no-results text as text", () => {
+    const select = setupSingleSelect();
+
+    select.chosen({
+      no_results_text: "<strong>Nothing found</strong>",
+      create_option: false
+    });
+
+    openChosen("country");
+    typeSearch("Spain");
+
+    const noResults = document.querySelector(".no-results");
+
+    expect(noResults).not.toBeNull();
+    expect(noResults.querySelector("strong")).toBeNull();
+    expect(noResults.textContent).toContain("<strong>Nothing found</strong>");
+    expect(noResults.textContent).toContain("Spain");
+  });
+
+  it("renders custom create-option text as text", () => {
+    const select = setupSingleSelect();
+
+    select.chosen({
+      create_option: true,
+      create_option_text: "<strong>Add country</strong>",
+      skip_no_results: true
+    });
+
+    openChosen("country");
+    typeSearch("Spain");
+
+    const createOption = document.querySelector(".create-option");
+
+    expect(createOption).not.toBeNull();
+    expect(createOption.querySelector("strong")).toBeNull();
+    expect(createOption.textContent).toContain("<strong>Add country</strong>");
+    expect(createOption.textContent).toContain("Spain");
+  });
+
+  it("creates new options from typed text without converting it to markup", () => {
+    const select = setupSingleSelect();
+
+    select.chosen({
+      create_option: true,
+      skip_no_results: true
+    });
+
+    const typedValue = "<strong>Spain</strong>";
+
+    openChosen("country");
+    typeSearch(typedValue);
+
+    const createOption = document.querySelector(".create-option");
+
+    expect(createOption).not.toBeNull();
+
+    createOption.dispatchEvent(leftMouseEvent("mouseover"));
+    createOption.dispatchEvent(leftMouseEvent("mouseup"));
+
+    const createdOption = [...select.options].find(option => option.value === typedValue);
+
+    expect(createdOption).not.toBeUndefined();
+    expect(createdOption.text).toBe(typedValue);
+    expect(createdOption.innerHTML).not.toContain("<strong>");
+  });
+
+  it("associates labels when select ids contain selector punctuation", () => {
+    const select = setupSelectorPunctuationLabelSelect();
+
+    expect(() => select.chosen()).not.toThrow();
+
+    const input = document.querySelector(".chosen-container .chosen-search-input");
+
+    expect(input).not.toBeNull();
+    expect(input.getAttribute("aria-labelledby")).toContain("punctuation-label");
   });
 
   it("updates results after chosen:updated is dispatched", () => {

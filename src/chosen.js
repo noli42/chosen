@@ -30,6 +30,12 @@
       options.forEach(option => this.add_option(option, group_position, group.disabled));
     }
 
+    escape_html(text) {
+      const div = document.createElement('div');
+      div.textContent = text == null ? '' : String(text);
+      return div.innerHTML;
+    }
+
     add_option(option, group_position, group_disabled) {
       if (option.nodeName.toUpperCase() === "OPTION") {
         if (option.text !== "") {
@@ -40,7 +46,7 @@
             options_index: this.options_index,
             value: option.value,
             text: option.text,
-            html: option.innerHTML.trim(),
+            html: this.escape_html(option.text).trim(),
             title: option.title ? option.title : undefined,
             selected: option.selected,
             disabled: group_disabled === true ? group_disabled : option.disabled,
@@ -67,14 +73,22 @@
         'data-option-array-index': this.parsed.length,
         'data-value': option.value
       };
+
       if (this.copy_data_attributes && option) {
         Array.from(option.attributes).forEach(attr => {
           const attrName = attr.nodeName;
-          if (/data-.*/.test(attrName)) {
+          const attrNameLower = attrName.toLowerCase();
+
+          if (
+            /^data-[\w:.-]+$/i.test(attrName) &&
+            attrNameLower !== 'data-option-array-index' &&
+            attrNameLower !== 'data-value'
+          ) {
             dataAttr[attrName] = attr.nodeValue;
           }
         });
       }
+
       return dataAttr;
     }
 
@@ -703,16 +717,12 @@
 
     get_no_results_html(terms) {
       return `<li class="no-results">
-  ${this.results_none_found} <span>${this.escape_html(terms)}</span>
+  ${this.escape_html(this.results_none_found)} <span>${this.escape_html(terms)}</span>
 </li>`;
     }
 
-    get_option_html({ value, text }) {
-      return `<option value="${value}" selected>${text}</option>`;
-    }
-
     get_create_option_html(terms) {
-      return `<li class="create-option active-result" role="option"><a>${this.create_option_text}</a> <span>${this.escape_html(terms)}</span></li>`;
+      return `<li class="create-option active-result" role="option"><a>${this.escape_html(this.create_option_text)}</a> <span>${this.escape_html(terms)}</span></li>`;
     }
 
     static browser_is_supported(options) {
@@ -1143,7 +1153,8 @@
     set_label_behavior() {
       this.form_field_label = this.form_field.closest("label");
       if (!this.form_field_label && this.form_field.id.length) {
-        this.form_field_label = document.querySelector(`label[for='${this.form_field.id}']`);
+        this.form_field_label = Array.from(document.querySelectorAll("label"))
+          .find(label => label.getAttribute("for") === this.form_field.id);
       }
       if (this.form_field_label) {
         this.form_field_label.addEventListener('click', this.label_click_handler);
@@ -1438,8 +1449,15 @@
     }
 
     select_append_option(options) {
-      const option = this.get_option_html(options);
-      this.form_field.insertAdjacentHTML('beforeend', option);
+      const option = new Option(
+        options.text == null ? '' : String(options.text),
+        options.value == null ? '' : String(options.value),
+        true,
+        true
+      );
+
+      this.form_field.add(option);
+
       const event = new Event("chosen:updated");
       this.form_field.dispatchEvent(event);
       const changeEvent = new Event("change", { bubbles: true });
