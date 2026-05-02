@@ -949,6 +949,12 @@
       }
     }
 
+    is_choice_close_target(evt) {
+      return evt &&
+        evt.target instanceof Element &&
+        evt.target.closest(".search-choice-close");
+    }
+
     container_mousedown(evt) {
       if (this.is_disabled) {
         return;
@@ -964,7 +970,7 @@
         evt.preventDefault();
       }
 
-      if (!((evt != null) && evt.target.classList.contains("search-choice-close"))) {
+      if (!this.is_choice_close_target(evt)) {
         if (!this.active_field) {
           if (this.is_multiple) {
             this.search_field.value = "";
@@ -1248,6 +1254,7 @@
         close_link.appendChild(span);
 
         close_link.addEventListener('click', evt => this.choice_destroy_link_click(evt));
+        close_link.addEventListener('touchend', evt => this.choice_destroy_link_click(evt));
         choice.appendChild(close_link);
       }
       if (this.inherit_option_classes && item.classes) {
@@ -1259,8 +1266,15 @@
     choice_destroy_link_click(evt) {
       evt.preventDefault();
       evt.stopPropagation();
+
       if (!this.is_disabled) {
-        this.choice_destroy(evt.target);
+        const close_link = evt.target instanceof Element
+          ? evt.target.closest(".search-choice-close")
+          : null;
+
+        if (close_link) {
+          this.choice_destroy(close_link);
+        }
       }
     }
 
