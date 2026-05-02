@@ -11,6 +11,108 @@ Chosen has no jQuery dependency and does not require any other external JavaScri
 For **downloads**, see:
 https://github.com/noli42/chosen/releases
 
+## Usage
+
+Include the JavaScript and CSS files, then call `chosen()` on a select element.
+
+```html
+<link rel="stylesheet" href="chosen.css">
+<script src="chosen.js"></script>
+
+<select id="country-select">
+  <option value=""></option>
+  <option value="hu">Hungary</option>
+  <option value="de">Germany</option>
+  <option value="fr">France</option>
+</select>
+
+<script>
+  document.getElementById("country-select").chosen({
+    search_contains: true
+  });
+</script>
+```
+
+## Usage with npm
+
+```bash
+npm install @noli42/chosen
+```
+
+Import the JavaScript, then import the CSS:
+
+```js
+import "@noli42/chosen";
+import "@noli42/chosen/chosen.css";
+
+const select = document.querySelector("#country-select");
+
+window.Chosen.init(select, {
+  search_contains: true
+});
+```
+
+The original DOM API is also available:
+
+```js
+select.chosen({
+  search_contains: true
+});
+```
+
+## Usage with React
+
+Chosen is a DOM-based select enhancement library, so initialize it after the `<select>` element has mounted. In React, that usually means calling it inside `useEffect`.
+
+```jsx
+import { useEffect, useRef } from "react";
+import "@noli42/chosen";
+import "@noli42/chosen/chosen.css";
+
+export function ChosenSelect() {
+  const selectRef = useRef(null);
+
+  useEffect(() => {
+    const select = selectRef.current;
+
+    if (!select || !window.Chosen) {
+      return;
+    }
+
+    window.Chosen.init(select, {
+      search_contains: true
+    });
+
+    return () => {
+      window.Chosen.destroy(select);
+    };
+  }, []);
+
+  return (
+    <select ref={selectRef}>
+      <option value=""></option>
+      <option value="hu">Hungary</option>
+      <option value="de">Germany</option>
+      <option value="fr">France</option>
+    </select>
+  );
+}
+```
+
+For dynamic options, notify Chosen after React updates the `<option>` elements:
+
+```jsx
+useEffect(() => {
+  if (!selectRef.current) {
+    return;
+  }
+
+  selectRef.current.dispatchEvent(new Event("chosen:updated"));
+}, [options]);
+```
+
+Chosen can be imported in server-rendered applications, but initialization still requires a browser DOM. Call `window.Chosen.init(...)` only on the client, for example inside `useEffect`.
+
 ### Chosen Credits
 
 - Concept and development by [Patrick Filler](http://patrickfiller.com) for [Harvest](http://getharvest.com/)
