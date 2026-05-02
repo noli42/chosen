@@ -11,6 +11,12 @@ Chosen has no jQuery dependency and does not require any other external JavaScri
 For **downloads**, see:
 https://github.com/noli42/chosen/releases
 
+## Demo
+
+A live demo is available on GitHub Pages:
+
+[Open the demo](https://noli42.github.io/chosen)
+
 ## Usage
 
 Include the JavaScript and CSS files, then call `chosen()` on a select element.
