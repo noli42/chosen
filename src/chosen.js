@@ -272,7 +272,7 @@
         option_el.style.cssText = option.style;
       }
       for (let attrName in option.data) {
-        if (option.data.hasOwnProperty(attrName)) {
+        if (Object.prototype.hasOwnProperty.call(option.data, attrName)) {
           option_el.setAttribute(attrName, option.data[attrName]);
         }
       }
@@ -713,7 +713,7 @@
 </a>
 <div class="chosen-drop">
   <div class="chosen-search">
-    <input class="chosen-search-input" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-haspopup="true" aria-autocomplete="list" autocomplete="off" />
+    <input class="chosen-search-input" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-haspopup="true" aria-autocomplete="list" />
   </div>
   <ul class="chosen-results" role="listbox"></ul>
 </div>`;
@@ -846,6 +846,7 @@
       this.search_results.addEventListener('mouseup', evt => this.search_results_mouseup(evt));
       this.search_results.addEventListener('mouseover', evt => this.search_results_mouseover(evt));
       this.search_results.addEventListener('mouseout', evt => this.search_results_mouseout(evt));
+      this.search_results.addEventListener('wheel', evt => this.search_results_mousewheel(evt));
       this.search_results.addEventListener('mousewheel', evt => this.search_results_mousewheel(evt));
       this.search_results.addEventListener('DOMMouseScroll', evt => this.search_results_mousewheel(evt));
       this.search_results.addEventListener('touchstart', evt => this.search_results_touchstart(evt));
@@ -1042,11 +1043,7 @@
       const windowHeight = window.innerHeight;
       const dropdownTop = this.container.getBoundingClientRect().top + this.container.offsetHeight - window.pageYOffset;
       const totalHeight = this.dropdown.offsetHeight + dropdownTop;
-      if (totalHeight > windowHeight) {
-        return true;
-      } else {
-        return false;
-      }
+      return totalHeight > windowHeight;
     }
 
     activate_field() {
@@ -1616,19 +1613,49 @@
   }
 
   // Attach chosen method to HTMLElement prototype
-  HTMLElement.prototype.chosen = function(options) {
-    if (!AbstractChosen.browser_is_supported(options)) {
-      return this;
-    }
-    if (options === 'destroy') {
-      if (this.__chosen_instance instanceof Chosen) {
-        this.__chosen_instance.destroy();
+  if (typeof HTMLElement !== "undefined") {
+    HTMLElement.prototype.chosen = function(options) {
+      if (!AbstractChosen.browser_is_supported(options)) {
+        return this;
       }
-      return;
+      if (options === 'destroy') {
+        if (this.__chosen_instance instanceof Chosen) {
+          this.__chosen_instance.destroy();
+        }
+        return;
+      }
+      if (!(this.__chosen_instance instanceof Chosen)) {
+        this.__chosen_instance = new Chosen(this, options);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      const chosenGlobal = window.Chosen || {};
+
+      if (chosenGlobal.init == null) {
+        chosenGlobal.init = function(element, options) {
+          if (!element || typeof element.chosen !== "function") {
+            throw new TypeError("Chosen.init expects an element with a chosen method");
+          }
+
+          element.chosen(options);
+          return element.__chosen_instance || element;
+        };
+      }
+
+      if (chosenGlobal.destroy == null) {
+        chosenGlobal.destroy = function(element) {
+          if (!element || typeof element.chosen !== "function") {
+            throw new TypeError("Chosen.destroy expects an element with a chosen method");
+          }
+
+          element.chosen("destroy");
+          return element;
+        };
+      }
+
+      window.Chosen = chosenGlobal;
     }
-    if (!(this.__chosen_instance instanceof Chosen)) {
-      this.__chosen_instance = new Chosen(this, options);
-    }
-  };
+  }
 
 }).call(this);

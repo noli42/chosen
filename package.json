@@ -1,6 +1,6 @@
 {
   "name": "@noli42/chosen",
-  "version": "3.0.6",
+  "version": "3.1.0",
   "description": "Chosen is a library for making long, unwieldy select boxes more friendly.",
   "main": "dist/chosen.min.js",
   "scripts": {
@@ -29,10 +29,10 @@
     "vitest": "^4.1.5"
   },
   "files": [
-    "chosen.js",
-    "chosen.min.js",
-    "chosen.css",
-    "chosen.min.css",
-    "chosen.css.map"
+    "dist/chosen.js",
+    "dist/chosen.min.js",
+    "dist/chosen.css",
+    "dist/chosen.min.css",
+    "dist/chosen.css.map"
   ]
 }
