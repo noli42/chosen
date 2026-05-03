@@ -650,10 +650,41 @@
       if (this.options.width != null) {
         return this.options.width;
       }
+
       if (this.form_field.offsetWidth > 0) {
-        return `${this.form_field.offsetWidth}px`;
+        const select_width = this.form_field.offsetWidth + this.container_width_extra();
+        return `${Math.max(select_width, this.container_min_width())}px`;
       }
+
       return "auto";
+    }
+
+    container_width_extra() {
+      return this.is_multiple ? 8 : 35;
+    }
+
+    container_min_width() {
+      const style = window.getComputedStyle(this.form_field);
+      const font_size = parseFloat(style.fontSize) || 14;
+
+      if (this.has_search_or_create_ui()) {
+        return Math.ceil(font_size * 12);
+      }
+
+      return Math.ceil(font_size * 8);
+    }
+
+    has_search_or_create_ui() {
+      if (this.create_option) {
+        return true;
+      }
+
+      if (this.is_multiple) {
+        return true;
+      }
+
+      return !this.disable_search &&
+        this.form_field.options.length > this.disable_search_threshold;
     }
 
     include_option_in_results(option) {
