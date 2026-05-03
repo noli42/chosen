@@ -725,7 +725,7 @@ describe("Chosen select component", () => {
 
     const container = document.querySelector(`#${chosenContainerId("country")}`);
 
-    expect(container.style.width).toBe("95%");
+    expect(container.style.getPropertyValue("--chosen-width")).toBe("95%");
   });
 
   it("inherits select classes when inherit_select_classes is enabled", () => {
@@ -929,20 +929,19 @@ describe("Chosen select component", () => {
     expect(input.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("destroys the chosen instance and restores the original select styles", () => {
+  it("destroys the chosen instance and restores the original select class", () => {
     const select = setupSingleSelect();
 
     select.chosen({ create_option: true, skip_no_results: true });
 
     expect(document.querySelector(`#${chosenContainerId("country")}`)).not.toBeNull();
+    expect(select.classList.contains("chosen-original-select")).toBe(true);
 
     select.chosen("destroy");
 
     expect(document.querySelector(`#${chosenContainerId("country")}`)).toBeNull();
     expect(select.__chosen_instance).toBeUndefined();
-    expect(select.style.position).toBe("");
-    expect(select.style.opacity).toBe("");
-    expect(select.style.pointerEvents).toBe("");
+    expect(select.classList.contains("chosen-original-select")).toBe(false);
   });
 
   it("can be initialized again after destroy", () => {

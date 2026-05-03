@@ -11,9 +11,16 @@ $chosen-background-color: #fff !default;
 $chosen-selected-color: #e0e0e0 !default;
 
 /* @group Base */
+.chosen-original-select {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
 .chosen-container {
 	position: relative;
 	display: inline-block;
+	width: var(--chosen-width, auto);
 	vertical-align: middle;
 	font-size: 14px;
 	user-select: none;
@@ -336,7 +343,7 @@ $chosen-selected-color: #e0e0e0 !default;
 				font-family: sans-serif;
 				line-height: normal;
 				border-radius: 0;
-				width: 25px;
+				width: var(--chosen-search-width, 25px);
 			}
 		}
 

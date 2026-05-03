@@ -830,15 +830,13 @@
       for (let prop in container_props) {
         this.container.setAttribute(prop, container_props[prop]);
       }
-      this.container.style.width = this.container_width();
+      this.container.style.setProperty('--chosen-width', this.container_width());
       if (this.is_multiple) {
         this.container.innerHTML = this.get_multi_html();
       } else {
         this.container.innerHTML = this.get_single_html();
       }
-      this.form_field.style.position = 'absolute';
-      this.form_field.style.opacity = 0;
-      this.form_field.style.pointerEvents = 'none';
+      this.form_field.classList.add('chosen-original-select');
       this.form_field.parentNode.insertBefore(this.container, this.form_field.nextSibling);
       this.dropdown = this.container.querySelector('div.chosen-drop');
       this.dropdown.setAttribute('aria-hidden', 'true');
@@ -914,10 +912,7 @@
       }
       this.container.parentNode.removeChild(this.container);
       delete this.form_field.__chosen_instance;
-      this.form_field.style.position = '';
-      this.form_field.style.opacity = '';
-      this.form_field.style.pointerEvents = '';
-      this.form_field.style.display = '';
+      this.form_field.classList.remove('chosen-original-select');
       if (this._a11y_orig_aria_hidden === null) {
         this.form_field.removeAttribute('aria-hidden');
       } else {
@@ -1632,7 +1627,7 @@
         width = Math.min(this.container.offsetWidth - 10, width);
       }
 
-      this.search_field.style.width = `${width}px`;
+      this.search_field.style.setProperty('--chosen-search-width', `${width}px`);
     }
 
     trigger_form_field_change(extra) {
