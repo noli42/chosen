@@ -732,7 +732,9 @@
         if (target) {
           this.result_highlight = target;
           this.result_select(evt);
-          this.search_field.focus();
+          if (this.results_showing) {
+            this.search_field.focus();
+          }
         }
       }
     }
@@ -1190,6 +1192,9 @@
         const event = new CustomEvent("chosen:hiding_dropdown", { detail: { chosen: this } });
         this.form_field.dispatchEvent(event);
       }
+      if (this.dropdown.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
       this.dropdown.setAttribute("aria-hidden", "true");
       this.search_field.setAttribute("aria-expanded", false);
       this.results_showing = false;
@@ -1238,7 +1243,9 @@
         if (target) {
           this.result_highlight = target;
           this.result_select(evt);
-          this.search_field.focus();
+          if (this.results_showing) {
+            this.search_field.focus();
+          }
         }
       }
     }
