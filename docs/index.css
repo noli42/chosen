@@ -1,0 +1,85 @@
+body {
+  color: #333;
+  line-height: 1.5;
+}
+
+main#content {
+  padding-bottom: 2rem;
+}
+
+h1,
+h2,
+h3 {
+  color: #222;
+}
+
+a {
+  color: #0645ad;
+}
+
+a:hover,
+a:focus {
+  color: #042f7a;
+}
+
+a:focus,
+button:focus,
+select:focus,
+input:focus,
+.chosen-container-active .chosen-single,
+.chosen-container-active .chosen-choices {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+.side-by-side > div {
+  margin-bottom: 1rem;
+}
+
+.side-by-side em {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #444;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.select,
+.chosen-container {
+  margin-top: 0.25rem;
+}
+
+.chosen-container-single .chosen-single,
+.chosen-container-multi .chosen-choices {
+  color: #333;
+}
+
+.chosen-container-single .chosen-single span,
+.chosen-container-single .chosen-single.chosen-default span,
+.chosen-container-multi .chosen-choices .search-field input.default {
+  color: #555;
+}
+
+.chosen-container .chosen-results li {
+  line-height: 1.4;
+}
+
+.chosen-container .chosen-results li.highlighted {
+  color: #fff;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  color: #000;
+  border: 2px solid #1a73e8;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}

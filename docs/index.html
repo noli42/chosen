@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <title>Chosen: A javascript library to Tame Unwieldy Select Boxes</title>
   <link rel="stylesheet" href="../dist/chosen.css">
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
   <form>
     <div id="container">
-      <div id="content">
+      <main id="content">
         <header>
-          <h1>Chosen <small>(<span id="latest-version">v3.1.0</span>)</small></h1>
+          <h1>Chosen <small>(<span id="latest-version">v3.1.2</span>)</small></h1>
         </header>
         <p>Chosen is a javascript library that makes long, unwieldy select boxes much more user-friendly.</p>
 
@@ -21,7 +22,7 @@
       <div class="side-by-side clearfix">
         <div>
           <em>Turns This</em>
-          <select data-placeholder="Choose a Country..." class="select" tabindex="1">
+          <select data-placeholder="Choose a Country..." class="select" aria-label="Standard Select - Turns This - Choose a Country">
             <option value="" selected disabled hidden>Choose a Country...</option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
@@ -278,7 +279,7 @@
         </div>
         <div>
           <em>Into This</em>
-          <select data-placeholder="Choose a Country..." class="chosen-select" tabindex="2">
+          <select data-placeholder="Choose a Country..." class="chosen-select" aria-label="Standard Select - Into This - Choose a Country">
             <option value="" selected disabled hidden>Choose a Country...</option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
@@ -539,7 +540,7 @@
       <div class="side-by-side clearfix">
         <div>
           <em>Turns This</em>
-          <select data-placeholder="Choose a Country..." class="select" multiple tabindex="3">
+          <select data-placeholder="Choose a Country..." class="select" multiple aria-label="Multiple Select - Turns This - Choose countries">
             <option value=""></option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
@@ -796,7 +797,7 @@
         </div>
         <div>
           <em>Into This</em>
-          <select data-placeholder="Choose a Country..." class="chosen-select" multiple tabindex="4">
+          <select data-placeholder="Choose a Country..." class="chosen-select" multiple aria-label="Multiple Select - Into This - Choose countries">
             <option value=""></option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
@@ -1057,7 +1058,7 @@
       <div class="side-by-side clearfix">
         <div>
           <em>Single Select with Groups</em>
-          <select data-placeholder="Your Favorite Football Team" class="chosen-select" tabindex="5">
+          <select data-placeholder="Your Favorite Football Team" class="chosen-select" aria-label="Optgroup Support - Single Select with Groups - Favorite football team">
             <option value=""></option>
             <optgroup label="NFC EAST">
               <option>Dallas Cowboys</option>
@@ -1111,7 +1112,7 @@
         </div>
         <div>
           <em>Multiple Select with Groups</em>
-          <select data-placeholder="Your Favorite Football Team" class="chosen-select" multiple tabindex="6">
+          <select data-placeholder="Your Favorite Football Team" class="chosen-select" multiple aria-label="Optgroup Support - Multiple Select with Groups - Favorite football teams">
             <option value=""></option>
             <optgroup label="NFC EAST">
               <option>Dallas Cowboys</option>
@@ -1170,7 +1171,7 @@
         <p>Chosen automatically highlights selected options and removes disabled and / or hidden options.</p>
         <div>
           <em>Single Select</em>
-          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select" tabindex="7">
+          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select" aria-label="Selected, Disabled and Hidden Support - Single Select - Favorite type of bear">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1184,7 +1185,7 @@
         </div>
         <div>
           <em>Multiple Select</em>
-          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select" tabindex="8">
+          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select" aria-label="Selected, Disabled and Hidden Support - Multiple Select - Favorite types of bear">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1206,7 +1207,7 @@
 });</code></pre>
         <p></p>
         <div>
-          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-no-single" tabindex="9">
+          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-no-single" aria-label="Hide Search on Single Select - Favorite type of bear">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1238,7 +1239,7 @@
         <p></p>
         <div>
           <em>Single Select</em>
-          <select data-placeholder="Type &apos;C&apos; to view" class="chosen-select-no-results" tabindex="10">
+          <select data-placeholder="Type &apos;C&apos; to view" class="chosen-select-no-results" aria-label="No Results Text Support - Single Select">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1252,7 +1253,7 @@
         </div>
         <div>
           <em>Multiple Select</em>
-          <select data-placeholder="Type &apos;C&apos; to view" multiple class="chosen-select-no-results" tabindex="11">
+          <select data-placeholder="Type &apos;C&apos; to view" multiple class="chosen-select-no-results" aria-label="No Results Text Support - Multiple Select">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1284,7 +1285,7 @@
       <div class="side-by-side clearfix">
         <p>When a single select box isn't a required field, you can set <code class="language-javascript">allow_single_deselect: true</code> and Chosen will add a UI element for option deselection. This will only work if the first option has blank text.</p>
         <div class="side-by-side clearfix">
-          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-deselect" tabindex="12">
+          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-deselect" aria-label="Allow Deselect on Single Selects - Favorite type of bear">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1307,7 +1308,7 @@
 
         <div>
           <em>Single Right-to-Left Select</em>
-          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-rtl" tabindex="13">
+          <select data-placeholder="Your Favorite Type of Bear" class="chosen-select-rtl" aria-label="Right-to-Left Support - Single Select">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1319,7 +1320,7 @@
         </div>
         <div>
           <em>Multiple Right-to-Left Select</em>
-          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select-rtl" tabindex="14">
+          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select-rtl" aria-label="Right-to-Left Support - Multiple Select">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1362,7 +1363,7 @@
 });</code></pre>
         <div>
           <em>Single Select</em>
-          <select data-placeholder="Your Favorite Types of Bear" class="chosen-select-width" tabindex="15">
+          <select data-placeholder="Your Favorite Types of Bear" class="chosen-select-width" aria-label="Custom Width Support - Single Select">
             <option value=""></option>
             <option selected>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1376,7 +1377,7 @@
         </div>
         <div>
           <em>Multiple Select</em>
-          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select-width" tabindex="16">
+          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select-width" aria-label="Custom Width Support - Multiple Select">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1396,7 +1397,7 @@
         <p></p>
         <div>
           <em><label for="single-label-example">Click to Highlight Single Select</label></em>
-          <select data-placeholder="Your Favorite Types of Bear" class="chosen-select" tabindex="17" id="single-label-example">
+          <select data-placeholder="Your Favorite Types of Bear" class="chosen-select" id="single-label-example">
             <option value=""></option>
             <option selected>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1410,7 +1411,7 @@
         </div>
         <div>
           <em><label for="multiple-label-example">Click to Highlight Multiple Select</label></em>
-          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select" tabindex="18" id="multiple-label-example">
+          <select data-placeholder="Your Favorite Types of Bear" multiple class="chosen-select" id="multiple-label-example">
             <option value=""></option>
             <option>American Black Bear</option>
             <option>Asiatic Black Bear</option>
@@ -1444,10 +1445,10 @@
       </ul>
 
       <footer>
-        &copy; 2011&ndash;2016 <a href="https://www.getharvest.com/">Harvest</a>. &copy; 2020-2022 <a href="https://jjj.software">JJJ</a>. &copy; 2024- <a href="https://github.com/noli42">noli42</a> Chosen is licensed under the <a href="https://github.com/noli42/chosen/blob/main/LICENSE.md">MIT license</a>.
+        &copy; 2011&ndash;2016 <a href="https://www.getharvest.com/">Harvest</a>. &copy; 2020-2022 <a href="https://jjj.software">JJJ</a>. &copy; 2024- <a href="https://github.com/noli42">@noli42</a> Chosen is licensed under the <a href="https://github.com/noli42/chosen/blob/main/LICENSE.md">MIT license</a>.
       </footer>
 
-    </div>
+    </main>
   </div>
   <script src="../dist/chosen.js" type="text/javascript"></script>
   <script src="init.js" type="text/javascript" charset="utf-8"></script>
