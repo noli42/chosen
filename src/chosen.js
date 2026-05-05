@@ -740,7 +740,7 @@
     }
 
     get_single_html() {
-      return `<a class="chosen-single chosen-default">
+      return `<a class="chosen-single chosen-default" tabindex="0" role="button">
   <span>${this.default_text}</span>
   <div aria-label="Show options"><b aria-hidden="true"></b></div>
 </a>
