@@ -1267,7 +1267,6 @@
       const choice = document.createElement('li');
       choice.className = 'search-choice';
       choice.setAttribute('data-value', item.value);
-      choice.setAttribute('role', 'option');
       choice.innerHTML = `<span>${this.choice_label(item)}</span>`;
       if (item.disabled) {
         choice.classList.add('search-choice-disabled');
@@ -1276,6 +1275,7 @@
         close_link.type = 'button';
         close_link.tabIndex = -1;
         close_link.className = 'search-choice-close';
+        close_link.setAttribute('aria-label', AbstractChosen.default_remove_item_text);
         close_link.setAttribute('data-option-array-index', item.data['data-option-array-index']);
 
         const span = document.createElement('span');
@@ -1467,6 +1467,7 @@
         close_button.type = 'button';
         close_button.tabIndex = -1;
         close_button.className = 'search-choice-close';
+        close_button.setAttribute('aria-label', AbstractChosen.default_remove_item_text);
         this.selected_item.querySelector('span').after(close_button);
       }
       this.selected_item.classList.add('chosen-single-with-deselect');
