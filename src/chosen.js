@@ -278,7 +278,8 @@
       }
       option_el.setAttribute("role", "option");
       option_el.innerHTML = option.highlighted_html || option.html;
-      option_el.id = `${this.form_field.id}-chosen-search-result-${option.data['data-option-array-index']}`;
+      const id_prefix = this.search_results_id_prefix || this.form_field.id;
+      option_el.id = `${id_prefix}-chosen-search-result-${option.data['data-option-array-index']}`;
       if (option.title) {
         option_el.title = option.title;
       }
@@ -806,6 +807,8 @@
   AbstractChosen.default_remove_item_text = "Remove selection";
 
   class Chosen extends AbstractChosen {
+    static next_uid = 0;
+
     setup() {
       this.current_selectedIndex = this.form_field.selectedIndex;
     }
@@ -844,7 +847,8 @@
       this.dropdown.setAttribute('aria-hidden', 'true');
       this.search_field = this.container.querySelector('input');
       this.search_results = this.container.querySelector('ul.chosen-results');
-      this.search_results.setAttribute('id', `${this.form_field.id}-chosen-search-results`);
+      this.search_results_id_prefix = this.form_field.id || `chosen-${Chosen.next_uid++}`;
+      this.search_results.setAttribute('id', `${this.search_results_id_prefix}-chosen-search-results`);
       this.search_field_scale();
       if (this.is_multiple) {
         this.search_choices = this.container.querySelector('ul.chosen-choices');
@@ -1201,10 +1205,19 @@
     }
 
     set_tab_index() {
-      if (this.form_field.tabIndex) {
-        const ti = this.form_field.tabIndex;
+      const ti = this.form_field.getAttribute('tabindex');
+
+      if (ti != null) {
         this.form_field.tabIndex = -1;
-        this.search_field.tabIndex = ti;
+
+        if (this.is_multiple) {
+          this.search_field.tabIndex = ti;
+        } else {
+          this.selected_item.tabIndex = ti;
+          this.search_field.tabIndex = -1;
+        }
+      } else if (!this.is_multiple) {
+        this.search_field.tabIndex = -1;
       }
     }
 
