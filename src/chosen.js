@@ -1184,7 +1184,7 @@
       this.form_field.dispatchEvent(event);
     }
 
-    results_hide() {
+    results_hide(options = {}) {
       if (this.results_showing) {
         this.result_clear_highlight();
         this.container.classList.remove("chosen-with-drop");
@@ -1196,7 +1196,7 @@
         const event = new CustomEvent("chosen:hiding_dropdown", { detail: { chosen: this } });
         this.form_field.dispatchEvent(event);
       }
-      if (this.dropdown.contains(document.activeElement)) {
+      if (this.dropdown.contains(document.activeElement) && !options.keep_focus) {
         document.activeElement.blur();
       }
       this.dropdown.setAttribute("aria-hidden", "true");
@@ -1399,7 +1399,7 @@
         const high = this.result_highlight;
         if (high.classList.contains("create-option")) {
           this.select_create_option(this.search_field.value);
-          this.results_hide();
+          this.results_hide({ keep_focus: !this.is_multiple && evt && evt.type === "keyup" });
           return;
         }
         this.result_clear_highlight();
@@ -1431,7 +1431,7 @@
             this.winnow_results();
           }
         } else {
-          this.results_hide();
+          this.results_hide({ keep_focus: !this.is_multiple && evt && evt.type === "keyup" });
           this.show_search_field_default();
         }
         if (this.is_multiple || this.form_field.selectedIndex !== this.current_selectedIndex) {
