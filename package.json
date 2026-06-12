@@ -10,7 +10,9 @@
     "copy:js": "cp src/chosen.js dist/chosen.js",
     "build": "npm run build:css && npm run minify:css && npm run build:js && npm run copy:js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:browser": "playwright test",
+    "test:all": "npm run test && npm run test:browser"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "cssnano": "^7.0.6",
     "jsdom": "^29.1.1",
     "postcss": "^8.4.47",

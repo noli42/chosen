@@ -10,3 +10,6 @@ dist/
 
 # MacOS files
 .DS_Store
+
+# Ignore test files
+test-results/
