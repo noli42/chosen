@@ -2,6 +2,7 @@ const { expect, test } = require("@playwright/test");
 const {
   initializeChosen,
   loadFixture,
+  pageHtml,
   singleSelectHtml
 } = require("./helpers/chosen-browser-page.js");
 
@@ -78,4 +79,37 @@ test.describe("Chosen single select in browser", () => {
 
     await expect(container).toHaveClass(/chosen-with-drop/);
   });
+
+  test("moves focus backward out of a single select after tabbing into it", async ({ page }) => {
+    await loadFixture(page, pageHtml(`
+      <button id="before">Before</button>
+      <label for="country">Country</label>
+      <select id="country" data-placeholder="Choose a Country...">
+        <option value="" selected disabled hidden>Choose a Country...</option>
+        <option value="United States">United States</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Hungary">Hungary</option>
+        <option value="Germany">Germany</option>
+      </select>
+      <button id="after">After</button>
+    `));
+
+    await initializeChosen(page, "#country", {
+      create_option: true,
+      skip_no_results: true
+    });
+
+    const before = page.locator("#before");
+    const input = page.locator("#country_chosen .chosen-search-input");
+
+    await before.focus();
+    await page.keyboard.press("Tab");
+
+    await expect(input).toBeFocused();
+
+    await page.keyboard.press("Shift+Tab");
+
+    await expect(before).toBeFocused();
+  });
+
 });

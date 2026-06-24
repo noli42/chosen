@@ -569,6 +569,22 @@
           this.backstroke_length = this.get_search_field_value().length;
           break;
         case 9: // tab
+          if (evt.shiftKey && !this.is_multiple) {
+            const previousTabIndex = this.selected_item.getAttribute("tabindex");
+            this.selected_item.tabIndex = -1;
+            this.mouse_on_container = false;
+            if (this.results_showing) {
+              this.results_hide({ keep_focus: true });
+            }
+            setTimeout(() => {
+              if (previousTabIndex == null) {
+                this.selected_item.removeAttribute("tabindex");
+              } else {
+                this.selected_item.setAttribute("tabindex", previousTabIndex);
+              }
+            }, 0);
+            break;
+          }
           if (this.results_showing && !this.is_multiple) {
             this.result_select(evt);
           }
