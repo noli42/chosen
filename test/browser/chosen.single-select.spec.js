@@ -16,6 +16,7 @@ test.describe("Chosen single select in browser", () => {
     });
 
     const trigger = page.locator("#country_chosen .chosen-single");
+    const input = page.locator("#country_chosen .chosen-search-input");
 
     await expect(trigger).toMatchAriaSnapshot(`
       - button /Choose a Country\\.\\.\\./ [expanded=false]
@@ -32,6 +33,8 @@ test.describe("Chosen single select in browser", () => {
     await expect(trigger).toMatchAriaSnapshot(`
       - button /Choose a Country\\.\\.\\./ [expanded=false]
     `);
+    await expect(trigger).toBeFocused();
+    await expect(input).toHaveAttribute("aria-expanded", "false");
   });
 
   test("exposes collapsed state after selecting an option", async ({ page }) => {
@@ -80,9 +83,13 @@ test.describe("Chosen single select in browser", () => {
     await expect(container).toHaveClass(/chosen-with-drop/);
   });
 
-  test("moves focus backward out of a single select after tabbing into it", async ({ page }) => {
+  test("uses the visible trigger as the closed single-select tab stop", async ({ page }) => {
     await loadFixture(page, pageHtml(`
-      <button id="before">Before</button>
+      <label for="native-country">Native country</label>
+      <select id="native-country">
+        <option>United States</option>
+        <option>United Kingdom</option>
+      </select>
       <label for="country">Country</label>
       <select id="country" data-placeholder="Choose a Country...">
         <option value="" selected disabled hidden>Choose a Country...</option>
@@ -99,17 +106,30 @@ test.describe("Chosen single select in browser", () => {
       skip_no_results: true
     });
 
-    const before = page.locator("#before");
+    const nativeSelect = page.locator("#native-country");
+    const trigger = page.locator("#country_chosen .chosen-single");
     const input = page.locator("#country_chosen .chosen-search-input");
 
-    await before.focus();
+    await nativeSelect.focus();
     await page.keyboard.press("Tab");
 
+    await expect(trigger).toBeFocused();
+    await expect(input).not.toBeFocused();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    await page.keyboard.press("ArrowDown");
+
     await expect(input).toBeFocused();
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await page.keyboard.press("Escape");
+
+    await expect(trigger).toBeFocused();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
 
     await page.keyboard.press("Shift+Tab");
 
-    await expect(before).toBeFocused();
+    await expect(nativeSelect).toBeFocused();
   });
 
 });

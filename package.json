@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.62.1",
     "cssnano": "^7.0.6",
     "jsdom": "^29.1.1",
     "postcss": "^8.4.47",

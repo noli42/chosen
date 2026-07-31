@@ -93,6 +93,42 @@ describe("Chosen accessibility attributes", () => {
     expect(trigger.querySelector("span").textContent).toBe("Select an Option");
   });
 
+  it("keeps initial single-select focus on the visible trigger", () => {
+    const select = setupSingleSelect();
+
+    select.chosen({ create_option: true, skip_no_results: true });
+
+    const container = document.querySelector(`#${chosenContainerId("country")}`);
+    const trigger = container.querySelector(".chosen-single");
+    const input = container.querySelector(".chosen-search-input");
+
+    trigger.focus();
+
+    expect(document.activeElement).toBe(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+    expect(container.classList.contains("chosen-with-drop")).toBe(false);
+  });
+
+  it.each([13, 32])("opens a focused single select with key code %i", keyCode => {
+    const select = setupSingleSelect();
+
+    select.chosen({ create_option: true, skip_no_results: true });
+
+    const container = document.querySelector(`#${chosenContainerId("country")}`);
+    const trigger = container.querySelector(".chosen-single");
+    const input = container.querySelector(".chosen-search-input");
+
+    trigger.focus();
+    trigger.dispatchEvent(keyboardEvent("keydown", keyCode));
+    trigger.dispatchEvent(keyboardEvent("keyup", keyCode));
+
+    expect(container.classList.contains("chosen-with-drop")).toBe(true);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(input);
+  });
+
   it("keeps single-select aria-expanded false after mouse selection", () => {
     const select = setupSingleSelect();
 
@@ -149,6 +185,7 @@ describe("Chosen accessibility attributes", () => {
     expect(container.classList.contains("chosen-with-drop")).toBe(false);
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
     expect(input.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(trigger);
   });
 
   it("keeps multiple-select aria-expanded behavior on the search input only", () => {

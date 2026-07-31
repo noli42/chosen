@@ -559,7 +559,11 @@
     }
 
     keydown_checker(evt) {
+      if (this.is_disabled) {
+        return;
+      }
       const stroke = evt.which != null ? evt.which : evt.keyCode;
+      const selectedItemKey = !this.is_multiple && evt.currentTarget === this.selected_item;
       this.search_field_scale();
       if (stroke !== 8 && this.pending_backstroke) {
         this.clear_backstroke();
@@ -591,7 +595,7 @@
           this.mouse_on_container = false;
           break;
         case 13: // enter
-          if (this.results_showing) {
+          if (this.results_showing || selectedItemKey) {
             evt.preventDefault();
           }
           break;
@@ -601,7 +605,7 @@
           }
           break;
         case 32: // space
-          if (this.disable_search) {
+          if (this.disable_search || selectedItemKey) {
             evt.preventDefault();
           }
           break;
@@ -617,7 +621,11 @@
     }
 
     keyup_checker(evt) {
+      if (this.is_disabled) {
+        return;
+      }
       const stroke = evt.which != null ? evt.which : evt.keyCode;
+      const selectedItemKey = !this.is_multiple && evt.currentTarget === this.selected_item;
       this.search_field_scale();
       switch (stroke) {
         case 8: // backspace
@@ -630,13 +638,27 @@
           break;
         case 13: // enter
           evt.preventDefault();
-          if (this.results_showing) {
+          if (selectedItemKey) {
+            if (!this.results_showing) {
+              this.results_show();
+            }
+          } else if (this.results_showing) {
             this.result_select(evt);
           }
           break;
         case 27: // escape
           if (this.results_showing) {
             this.results_hide({ restore_focus: !this.is_multiple });
+          }
+          break;
+        case 32: // space
+          if (selectedItemKey) {
+            evt.preventDefault();
+            if (!this.results_showing) {
+              this.results_show();
+            }
+          } else {
+            this.results_search();
           }
           break;
         case 9:
@@ -919,6 +941,10 @@
       if (this.is_multiple) {
         this.search_choices.addEventListener('click', evt => this.choices_click(evt));
       } else {
+        this.selected_item.addEventListener('focus', this.activate_action);
+        this.selected_item.addEventListener('blur', evt => this.input_blur(evt));
+        this.selected_item.addEventListener('keydown', evt => this.keydown_checker(evt));
+        this.selected_item.addEventListener('keyup', evt => this.keyup_checker(evt));
         this.container.addEventListener('click', evt => evt.preventDefault());
       }
     }
@@ -1002,16 +1028,10 @@
       if (this.is_disabled) {
         this.container.classList.add('chosen-disabled');
         this.search_field.disabled = true;
-        if (!this.is_multiple) {
-          this.selected_item.removeEventListener('focus', this.activate_field);
-        }
         this.close_field();
       } else {
         this.container.classList.remove('chosen-disabled');
         this.search_field.disabled = false;
-        if (!this.is_multiple) {
-          this.selected_item.addEventListener('focus', this.activate_field.bind(this));
-        }
       }
     }
 
@@ -1110,7 +1130,7 @@
       return totalHeight > windowHeight;
     }
 
-    activate_field() {
+    activate_field(evt) {
       if (this.is_disabled) {
         return;
       }
@@ -1121,7 +1141,9 @@
       this.active_field = true;
       this.search_field.value = this.search_field.value;
       this.search_results.setAttribute("aria-busy", false);
-      this.search_field.focus();
+      if (!evt || evt.target !== this.selected_item) {
+        this.search_field.focus();
+      }
     }
 
     test_active_click(evt) {
